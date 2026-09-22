@@ -32,6 +32,7 @@ class ShaderProgram {
   unifCamPos: WebGLUniformLocation;
   unifNoiseScale: WebGLUniformLocation;
   unifFlameStretch: WebGLUniformLocation;
+  unifTime: WebGLUniformLocation;
 
   constructor(shaders: Array<Shader>) {
     this.prog = gl.createProgram();
