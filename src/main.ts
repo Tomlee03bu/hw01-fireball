@@ -16,11 +16,25 @@ import lambertFragSource from './shaders/lambert-frag.glsl?raw';
 const controls = {
   tesselations: 5,
   'Load Scene': loadScene, // A function pointer, essentially
+  
+  timeSpeed: 1.0,
+  noiseScale: 4.0,
+  flameStretch: 1.0,
+  'Reset Defaults': resetDefaults,
 };
 
 let icosphere: Icosphere;
 let square: Square;
 let prevTesselations: number = 5;
+let time: number = 0;
+let gui: DAT.GUI;
+
+function resetDefaults() {
+  controls.timeSpeed = 1.00;
+  controls.noiseScale = 4.0;
+  controls.flameStretch = 1.0;
+  gui.updateDisplay();
+}
 
 function loadScene() {
   icosphere = new Icosphere(vec3.fromValues(0, 0, 0), 1, controls.tesselations);
@@ -30,6 +44,7 @@ function loadScene() {
 }
 
 function main() {
+  
   // Initial display for framerate
   const stats = Stats();
   stats.setMode(0);
@@ -39,9 +54,14 @@ function main() {
   document.body.appendChild(stats.domElement);
 
   // Add controls to the gui
-  const gui = new DAT.GUI();
+  gui = new DAT.GUI();
   gui.add(controls, 'tesselations', 0, 8).step(1);
   gui.add(controls, 'Load Scene');
+
+  gui.add(controls, 'timeSpeed', 0.0, 10).step(0.01).name('Caffeine Level');
+  gui.add(controls, 'noiseScale', 1.0, 10.0).step(0.1).name('Hiccups');
+  gui.add(controls, 'flameStretch', 0.0, 2.0).step(0.01).name('Hair Extensions');
+  gui.add(controls, 'Reset Defaults');
 
   // get canvas and webgl context
   const canvas = <HTMLCanvasElement> document.getElementById('canvas');
@@ -69,6 +89,7 @@ function main() {
 
   // This function will be called every frame
   function tick() {
+    time += 0.01*controls.timeSpeed;
     camera.update();
     stats.begin();
     gl.viewport(0, 0, window.innerWidth, window.innerHeight);
@@ -79,6 +100,14 @@ function main() {
       icosphere = new Icosphere(vec3.fromValues(0, 0, 0), 1, prevTesselations);
       icosphere.create();
     }
+   
+    lambert.setTime(time);
+
+    lambert.setCamPos(camera.controls.eye);
+    lambert.setNoiseScale(controls.noiseScale);
+    lambert.setFlameStretch(controls.flameStretch);
+
+
     renderer.render(camera, lambert, [
       icosphere,
       // square,

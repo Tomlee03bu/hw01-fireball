@@ -1,4 +1,4 @@
-import {vec4, mat4} from 'gl-matrix';
+import {vec4, mat4, vec3} from 'gl-matrix';
 import Drawable from './Drawable';
 import {gl} from '../../globals';
 
@@ -29,6 +29,9 @@ class ShaderProgram {
   unifModelInvTr: WebGLUniformLocation;
   unifViewProj: WebGLUniformLocation;
   unifColor: WebGLUniformLocation;
+  unifCamPos: WebGLUniformLocation;
+  unifNoiseScale: WebGLUniformLocation;
+  unifFlameStretch: WebGLUniformLocation;
 
   constructor(shaders: Array<Shader>) {
     this.prog = gl.createProgram();
@@ -48,12 +51,24 @@ class ShaderProgram {
     this.unifModelInvTr = gl.getUniformLocation(this.prog, "u_ModelInvTr");
     this.unifViewProj   = gl.getUniformLocation(this.prog, "u_ViewProj");
     this.unifColor      = gl.getUniformLocation(this.prog, "u_Color");
+    this.unifTime = gl.getUniformLocation(this.prog, "u_Time");
+    this.unifCamPos = gl.getUniformLocation(this.prog, "u_CamPos");
+    this.unifNoiseScale = gl.getUniformLocation(this.prog, "u_NoiseScale");
+    this.unifFlameStretch = gl.getUniformLocation(this.prog, "u_FlameStretch");
   }
 
   use() {
     if (activeProgram !== this.prog) {
       gl.useProgram(this.prog);
       activeProgram = this.prog;
+    }
+  }
+
+  setCamPos(pos: vec3) {
+    this.use();
+
+    if (this.unifCamPos !== null) {
+      gl.uniform3fv(this.unifCamPos, pos);
     }
   }
 
@@ -82,6 +97,29 @@ class ShaderProgram {
     this.use();
     if (this.unifColor !== -1) {
       gl.uniform4fv(this.unifColor, color);
+    }
+  }
+
+  setTime(time: number) {
+    this.use();
+    if (this.unifTime !== null) {
+      gl.uniform1f(this.unifTime, time);
+    }
+  }
+
+  setNoiseScale(value: number) {
+    this.use();
+
+    if (this.unifNoiseScale !== null) {
+      gl.uniform1f(this.unifNoiseScale, value);
+    }
+  }
+
+  setFlameStretch(value: number) {
+    this.use();
+
+    if (this.unifFlameStretch !== null) {
+      gl.uniform1f(this.unifFlameStretch, value);
     }
   }
 
