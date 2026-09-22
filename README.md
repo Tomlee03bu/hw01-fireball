@@ -56,6 +56,6 @@ I created 3 controls for the fireball, along with a way to reset back to my tail
 
 
 ## Blooper
-Just was funny when testing with amplitude for the masks
+Just thought it was funny when testing with amplitude for the masks
 
 ![Calcifer_Horrified](Calcifer_Horrified.png)
