@@ -33,6 +33,7 @@ class ShaderProgram {
   unifNoiseScale: WebGLUniformLocation;
   unifFlameStretch: WebGLUniformLocation;
   unifTime: WebGLUniformLocation;
+  unifTimeSpeed: WebGLUniformLocation | null;
 
   constructor(shaders: Array<Shader>) {
     this.prog = gl.createProgram();
@@ -53,6 +54,7 @@ class ShaderProgram {
     this.unifViewProj   = gl.getUniformLocation(this.prog, "u_ViewProj");
     this.unifColor      = gl.getUniformLocation(this.prog, "u_Color");
     this.unifTime = gl.getUniformLocation(this.prog, "u_Time");
+    this.unifTimeSpeed = gl.getUniformLocation(this.prog, "u_TimeSpeed");
     this.unifCamPos = gl.getUniformLocation(this.prog, "u_CamPos");
     this.unifNoiseScale = gl.getUniformLocation(this.prog, "u_NoiseScale");
     this.unifFlameStretch = gl.getUniformLocation(this.prog, "u_FlameStretch");
@@ -65,6 +67,13 @@ class ShaderProgram {
     }
   }
 
+  setTimeSpeed(speed: number) {
+    this.use();
+    if (this.unifTimeSpeed !== null) {
+      gl.uniform1f(this.unifTimeSpeed, speed);
+    }
+  }
+  
   setCamPos(pos: vec3) {
     this.use();
 

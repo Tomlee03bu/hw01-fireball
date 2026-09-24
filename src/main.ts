@@ -11,6 +11,9 @@ import ShaderProgram, {Shader} from './rendering/gl/ShaderProgram';
 import lambertVertSource from './shaders/lambert-vert.glsl?raw';
 import lambertFragSource from './shaders/lambert-frag.glsl?raw';
 
+import backgroundVertSource from './shaders/background-vert.glsl?raw';
+import backgroundFragSource from './shaders/background-frag.glsl?raw';
+
 // Define an object with application parameters and button callbacks
 // This will be referred to by dat.GUI's functions that add GUI elements.
 const controls = {
@@ -87,6 +90,11 @@ function main() {
     new Shader(gl.FRAGMENT_SHADER, lambertFragSource),
   ]);
 
+  const backgroundShader = new ShaderProgram([
+    new Shader(gl.VERTEX_SHADER, backgroundVertSource),
+    new Shader(gl.FRAGMENT_SHADER, backgroundFragSource),
+  ]);
+
   // This function will be called every frame
   function tick() {
     time += 0.01*controls.timeSpeed;
@@ -100,14 +108,19 @@ function main() {
       icosphere = new Icosphere(vec3.fromValues(0, 0, 0), 1, prevTesselations);
       icosphere.create();
     }
-   
+    
+    backgroundShader.setTime(time);
     lambert.setTime(time);
+
+    backgroundShader.setTimeSpeed(controls.timeSpeed);
 
     lambert.setCamPos(camera.controls.eye);
     lambert.setNoiseScale(controls.noiseScale);
     lambert.setFlameStretch(controls.flameStretch);
 
-
+    renderer.render(camera, backgroundShader, [
+      square,
+    ]);
     renderer.render(camera, lambert, [
       icosphere,
       // square,
