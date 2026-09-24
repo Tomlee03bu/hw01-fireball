@@ -2,7 +2,7 @@
 
 ## Live Demo
 
-[Click here to view the live demo]()
+[Click here to view the live demo](https://Tomlee03bu.github.io/hw01-fireball/)
 
 ## Project Description
 
